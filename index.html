@@ -98,7 +98,20 @@
 
 <script>
   // 👇 CHANGE THIS to the website you want the gift to open
-  const REDIRECT_URL = "https://letter-app-psi.vercel.app";
+  // Base address of your letter site, and the default page if a link has no ?m=
+  const LETTER_BASE = "https://letter-app-psi.vercel.app/m/";
+  const DEFAULT_URL = "https://letter-app-psi.vercel.app/";
+
+  // Each friend gets their own link:  .../I-Have-Something-For-You/?m=2092f8faa7
+  // Optional name:                    ...?m=2092f8faa7&name=Sara
+  const params = new URLSearchParams(window.location.search);
+  const msgId = (params.get("m") || "").replace(/[^a-zA-Z0-9_-]/g, ""); // letters/numbers only (safe)
+  const REDIRECT_URL = msgId ? LETTER_BASE + msgId : DEFAULT_URL;
+
+  const friendName = (params.get("name") || "").slice(0, 30);
+  if (friendName) {
+    document.querySelector("#scene1 h1").firstChild.textContent = "I have something for you, " + friendName + " ";
+  }
 
   const show = id => {
     document.querySelectorAll(".scene").forEach(s => s.classList.remove("active"));
